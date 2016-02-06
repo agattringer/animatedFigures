@@ -3,22 +3,42 @@ package at.fhooe.animation;
 /**
  * Created by alexandergattringer on 03/02/16.
  */
-import java.awt.Graphics;
-import java.awt.Rectangle;
+import at.fhooe.figure.Figure;
+import at.fhooe.visitor.Visitor;
+
+import java.awt.*;
+import java.util.ArrayList;
 import javax.swing.JPanel;
 
 public class AnimationPanel extends JPanel {
 
-    private static final int PAUSE = 20;
-    private Rectangle rect;
     private Thread animationThread;
+    private static final int PAUSE = 20;
+    private static final int TOTAL_TIME = 2000;
+
+    private ArrayList<Figure> figures;
+    private ArrayList<Visitor> visitors;
 
     public AnimationPanel() {
-        rect = new Rectangle(0, 0, 30, 30);
+        figures = new ArrayList<>();
+        visitors = new ArrayList<>();
     }
+
+    public void addVisitor(Visitor visitor){
+        visitors.add(visitor);
+    }
+
+    public void addFigure(Figure figure){
+        figures.add(figure);
+    }
+
     protected void paintComponent(Graphics g) {
         super.paintComponent(g);
-        g.fillRect(rect.x, rect.y, rect.width, rect.height);
+
+        for (Figure fig : figures){
+            fig.draw((Graphics2D)g);
+        }
+
     }
     public void start() {
         animationThread = new Thread(animator);
@@ -32,8 +52,26 @@ public class AnimationPanel extends JPanel {
         public void run() {
             try {
                 while (!Thread.interrupted()) {
-                    rect.x = (rect.x + 1) % getWidth();
-                    rect.y = (rect.y + 1) % getHeight();
+                    if (!figures.isEmpty() && !visitors.isEmpty()) {
+
+                        for (Visitor visitor : visitors) {
+                            long startTime = System.currentTimeMillis();
+                            long currentTime = 0;
+
+                            while (currentTime < TOTAL_TIME) {
+                                for (Figure figure : figures) {
+                                    figure.handleVisitor(visitor);
+                                }
+                                try {
+                                    Thread.sleep(PAUSE);
+                                } catch (InterruptedException e) {
+                                    e.printStackTrace();
+                                }
+                                repaint();
+                                currentTime = System.currentTimeMillis() - startTime;
+                            }
+                        }
+                    }
                     repaint();
                     Thread.sleep(PAUSE);
                 }

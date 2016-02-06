@@ -1,7 +1,44 @@
 package at.fhooe.figure;
 
+import at.fhooe.visitor.Visitor;
+import at.fhooe.visitor.VisitorHandler;
+
+import java.awt.*;
+import java.util.ArrayList;
+
 /**
  * Created by alexandergattringer on 03/02/16.
  */
-public interface Figure {
+public abstract class Figure implements VisitorHandler{
+    private ArrayList<Rectangle> shapes;
+    private int posX;
+    private int posY;
+
+    public void draw(Graphics2D graphics){
+        for (Rectangle rect : shapes){
+            graphics.draw(rect);
+        }
+    }
+
+    @Override
+    public void handleVisitor(Visitor visitor) {
+        visitor.visit(this);
+    }
+
+    public void setPosition(int x, int y){
+        int deltaX = x - posX;
+        int deltaY = y - posY;
+
+        for (Rectangle rect : shapes){
+            rect.setLocation(rect.x + deltaX, rect.y + deltaY);
+        }
+    }
+
+    public Point getLocation(){
+        return new Point(posX, posY);
+    }
+
+    public void setShapes(ArrayList<Rectangle> shapes) {
+        this.shapes = shapes;
+    }
 }
