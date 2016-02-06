@@ -1,6 +1,8 @@
 package at.fhooe.main;
 
 import at.fhooe.animation.AnimationPanel;
+import at.fhooe.decorator.FillBlueDecorator;
+import at.fhooe.decorator.GreenLineDecorator;
 import at.fhooe.figure.Dog;
 import at.fhooe.figure.Human;
 import at.fhooe.visitor.MoveLeftVisitor;
@@ -23,11 +25,11 @@ public class Application {
 
         Human human = new Human();
         human.setPosition(100, 100);
-        animationPanel.addFigure(human);
+        animationPanel.addFigure(new GreenLineDecorator(human));
 
         Dog dog = new Dog();
         dog.setPosition(500, 300);
-        animationPanel.addFigure(dog);
+        animationPanel.addFigure(new FillBlueDecorator(dog));
 
         animationPanel.addVisitor(new MoveLeftVisitor());
         animationPanel.addVisitor(new MoveRightVisitor());

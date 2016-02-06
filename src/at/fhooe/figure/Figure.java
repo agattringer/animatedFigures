@@ -29,9 +29,14 @@ public abstract class Figure implements VisitorHandler{
         int deltaX = x - posX;
         int deltaY = y - posY;
 
-        for (Rectangle rect : shapes){
-            rect.setLocation(rect.x + deltaX, rect.y + deltaY);
+
+        if (shapes != null) {
+            for (Rectangle rect : shapes) {
+                rect.setLocation(rect.x + deltaX, rect.y + deltaY);
+            }
         }
+        posX = x;
+        posY = y;
     }
 
     public Point getLocation(){
@@ -40,5 +45,14 @@ public abstract class Figure implements VisitorHandler{
 
     public void setShapes(ArrayList<Rectangle> shapes) {
         this.shapes = shapes;
+    }
+    public ArrayList<Rectangle> getShapes(){ return shapes; }
+
+    public void setPosX(int posX) {
+        this.posX = posX;
+    }
+
+    public void setPosY(int posY) {
+        this.posY = posY;
     }
 }
